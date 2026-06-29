@@ -3,90 +3,106 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Prototipo — Modal Plan Activo Requerido | Ciencuadras</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <title>Ciencuadras - Zona Privada | Productos y Servicios</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Montserrat', sans-serif; background: #f5f5f5; min-height: 100vh; }
-    .header { background: #fff; padding: 16px 24px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 12px; }
-    .header__logo { font-size: 20px; font-weight: 700; color: #00897B; }
-    .header__nav { font-size: 14px; color: #666; }
-    .content { max-width: 1100px; margin: 32px auto; padding: 0 24px; }
-    .content__title { font-size: 22px; font-weight: 700; color: #333; margin-bottom: 24px; }
-    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-    .product-card { background: #fff; border-radius: 10px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-align: center; transition: transform 0.2s; }
-    .product-card:hover { transform: translateY(-2px); }
-    .product-card__icon { font-size: 36px; margin-bottom: 12px; }
-    .product-card__name { font-size: 16px; font-weight: 700; color: #333; margin-bottom: 8px; }
-    .product-card__price { font-size: 20px; font-weight: 700; color: #00897B; margin-bottom: 16px; }
-    .product-card__desc { font-size: 13px; color: #666; margin-bottom: 20px; line-height: 1.4; }
-    .product-card__btn { background: #00897B; color: #fff; border: none; padding: 12px 28px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s; font-family: 'Montserrat', sans-serif; }
-    .product-card__btn:hover { background: #00796B; }
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; animation: fadeIn 0.2s ease-out; }
+    body { font-family: 'Montserrat', sans-serif; background: #f5f7fa; min-height: 100vh; }
+    .header { background: #fff; padding: 12px 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+    .header__left { display: flex; align-items: center; gap: 24px; }
+    .header__logo { display: flex; align-items: center; gap: 6px; }
+    .header__logo-icon { width: 28px; height: 28px; background: #00897B; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 700; }
+    .header__logo-text { font-size: 18px; font-weight: 700; color: #333; }
+    .header__logo-text span { color: #00897B; }
+    .header__nav { display: flex; gap: 16px; font-size: 13px; color: #555; }
+    .header__nav a { text-decoration: none; color: #555; }
+    .header__right { display: flex; align-items: center; gap: 12px; }
+    .header__btn-publish { background: #00897B; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+    .header__avatar { width: 32px; height: 32px; background: #1565C0; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12px; font-weight: 700; }
+    .layout { display: flex; min-height: calc(100vh - 56px); }
+    .sidebar { width: 200px; background: #fff; border-right: 1px solid #E8ECF0; padding: 24px 0; }
+    .sidebar__title { font-size: 18px; font-weight: 700; color: #333; padding: 0 20px; margin-bottom: 20px; }
+    .sidebar__item { display: flex; align-items: center; gap: 10px; padding: 10px 20px; font-size: 13px; color: #555; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+    .sidebar__item:hover { background: #f0f9f8; color: #00897B; }
+    .sidebar__item.active { background: #E8F5E9; color: #00897B; font-weight: 600; border-left: 3px solid #00897B; }
+    .main { flex: 1; padding: 32px; }
+    .main__title { font-size: 16px; font-weight: 700; color: #333; margin-bottom: 8px; }
+    .main__subtitle { font-size: 13px; color: #666; margin-bottom: 24px; line-height: 1.4; }
+    .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 24px; }
+    .product-card { background: #fff; border-radius: 10px; border: 1px solid #E8ECF0; overflow: hidden; transition: box-shadow 0.2s; }
+    .product-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .product-card__img { width: 100%; height: 140px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #999; font-size: 12px; position: relative; }
+    .product-card__badge { position: absolute; top: 8px; right: 8px; background: #FF5722; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+    .product-card__body { padding: 16px; }
+    .product-card__name { font-size: 14px; font-weight: 700; color: #333; margin-bottom: 8px; }
+    .product-card__desc { font-size: 11px; color: #666; line-height: 1.4; margin-bottom: 8px; min-height: 32px; }
+    .product-card__validity { font-size: 11px; color: #888; margin-bottom: 4px; }
+    .product-card__price { font-size: 18px; font-weight: 700; color: #333; margin-bottom: 8px; }
+    .product-card__link { font-size: 12px; color: #00897B; font-weight: 600; cursor: pointer; text-decoration: none; }
+    .product-card__link:hover { text-decoration: underline; }
+    .product-card__quantity { display: flex; align-items: center; border: 1px solid #E0E0E0; border-radius: 6px; overflow: hidden; margin-top: 12px; }
+    .product-card__qty-btn { width: 36px; height: 32px; border: none; background: #f5f5f5; cursor: pointer; font-size: 16px; color: #333; display: flex; align-items: center; justify-content: center; }
+    .product-card__qty-btn:hover { background: #e0e0e0; }
+    .product-card__qty-value { flex: 1; text-align: center; font-size: 13px; font-weight: 600; color: #333; border-left: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; }
     .modal-overlay.active { display: flex; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    .modal { background: #fff; border-radius: 12px; padding: 32px; max-width: 440px; width: 90%; box-shadow: 0 20px 60px rgba(41,48,56,0.15); text-align: center; animation: slideUp 0.3s ease-out; }
-    .modal__icon { width: 64px; height: 64px; margin: 0 auto 20px; background: #FFF3E0; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-    .modal__title { font-size: 18px; font-weight: 700; color: #333; margin-bottom: 12px; line-height: 1.3; }
-    .modal__description { font-size: 14px; color: #666; margin-bottom: 28px; line-height: 1.5; }
+    .modal { background: #fff; border-radius: 12px; padding: 32px; max-width: 420px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.2); text-align: center; animation: slideUp 0.3s ease-out; }
+    .modal__icon { width: 56px; height: 56px; margin: 0 auto 16px; background: #FFF3E0; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .modal__title { font-size: 16px; font-weight: 700; color: #333; margin-bottom: 10px; line-height: 1.3; }
+    .modal__description { font-size: 13px; color: #666; margin-bottom: 24px; line-height: 1.5; }
     .modal__actions { display: flex; gap: 12px; justify-content: center; }
-    .modal__btn { padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; min-width: 120px; font-family: 'Montserrat', sans-serif; }
+    .modal__btn { padding: 10px 20px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; min-width: 110px; font-family: 'Montserrat', sans-serif; }
     .modal__btn--cancel { background: #fff; color: #666; border: 1px solid #E0E0E0; }
-    .modal__btn--cancel:hover { background: #F5F5F5; border-color: #BDBDBD; }
+    .modal__btn--cancel:hover { background: #F5F5F5; }
     .modal__btn--primary { background: #00897B; color: #fff; }
-    .modal__btn--primary:hover { background: #00796B; box-shadow: 0 4px 12px rgba(0,137,123,0.3); }
-    .profile-selector { margin-bottom: 24px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-    .profile-selector__label { font-size: 13px; color: #666; font-weight: 600; }
-    .profile-selector__btn { padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid #E0E0E0; background: #fff; color: #666; transition: all 0.2s; font-family: 'Montserrat', sans-serif; }
-    .profile-selector__btn.active { background: #00897B; color: #fff; border-color: #00897B; }
-    .info-banner { background: #E3F2FD; border-radius: 8px; padding: 12px 16px; margin-bottom: 24px; font-size: 13px; color: #1565C0; display: flex; align-items: center; gap: 8px; }
-    @media (max-width: 480px) { .modal { padding: 24px 20px; } .modal__actions { flex-direction: column-reverse; } .modal__btn { width: 100%; } .products-grid { grid-template-columns: 1fr; } }
+    .modal__btn--primary:hover { background: #00796B; }
+    .profile-bar { background: #E3F2FD; padding: 10px 16px; font-size: 12px; color: #1565C0; display: flex; align-items: center; gap: 8px; justify-content: center; }
+    .profile-bar__btn { padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 600; cursor: pointer; border: 1px solid #90CAF9; background: #fff; color: #1565C0; font-family: 'Montserrat', sans-serif; }
+    .profile-bar__btn.active { background: #1565C0; color: #fff; border-color: #1565C0; }
+    @media (max-width: 768px) { .sidebar { display: none; } .products-grid { grid-template-columns: 1fr; } .modal__actions { flex-direction: column-reverse; } .modal__btn { width: 100%; } }
   </style>
 </head>
 <body>
-  <div class="header">
-    <div class="header__logo">ciencuadras</div>
-    <div class="header__nav">Zona Privada › Productos</div>
+  <div class="profile-bar">
+    <span>Simular perfil:</span>
+    <button class="profile-bar__btn active" onclick="setProfile('inmobiliaria', this)">Inmobiliaria</button>
+    <button class="profile-bar__btn" onclick="setProfile('personas', this)">Persona Natural</button>
+    <button class="profile-bar__btn" onclick="setProfile('agente-inmobiliario', this)">Agente Inmobiliario</button>
   </div>
-  <div class="content">
-    <div class="info-banner">ℹ Este prototipo simula la modal que aparece cuando un usuario sin plan activo intenta comprar un producto. Haz clic en "Comprar" en cualquier producto.</div>
-    <div class="profile-selector">
-      <span class="profile-selector__label">Simular perfil:</span>
-      <button class="profile-selector__btn active" onclick="setProfile('inmobiliaria', this)">Inmobiliaria</button>
-      <button class="profile-selector__btn" onclick="setProfile('personas', this)">Persona Natural</button>
-      <button class="profile-selector__btn" onclick="setProfile('agente-inmobiliario', this)">Agente Inmobiliario</button>
+  <div class="header">
+    <div class="header__left">
+      <div class="header__logo"><div class="header__logo-icon">C</div><div class="header__logo-text">cien<span>cuadras</span></div></div>
+      <div class="header__nav"><a href="#">Compra</a><a href="#">Arriendo</a><a href="#">Tramites y servicios</a><a href="#">Desde el exterior</a></div>
     </div>
-    <h1 class="content__title">Productos disponibles</h1>
-    <div class="products-grid">
-      <div class="product-card">
-        <div class="product-card__icon">⭐</div>
-        <div class="product-card__name">Destacado</div>
-        <div class="product-card__price">$99.900</div>
-        <div class="product-card__desc">Destaca tu inmueble en las primeras posiciones durante 1 mes</div>
-        <button class="product-card__btn" onclick="tryBuy('Destacado')">Comprar</button>
+    <div class="header__right"><div class="header__avatar">IC</div><button class="header__btn-publish">Publicar &#127968;</button></div>
+  </div>
+  <div class="layout">
+    <div class="sidebar">
+      <div class="sidebar__title">Mi zona privada</div>
+      <a class="sidebar__item" href="#">&#128202; Mis leads</a>
+      <a class="sidebar__item" href="#">&#128196; Publicaciones</a>
+      <a class="sidebar__item active" href="#">&#128722; Productos y servicios</a>
+      <a class="sidebar__item" href="#">&#128100; Mis datos</a>
+      <a class="sidebar__item" href="#">&#128179; Datos Facturacion</a>
+    </div>
+    <div class="main">
+      <div class="main__title">Productos y servicios</div>
+      <div class="main__subtitle">Encuentra aqui los productos y servicios que te brinda Ciencuadras para potenciar tus publicaciones y acompanarte en el proceso de venta o arriendo de tu inmueble.</div>
+      <div class="products-grid">
+        <div class="product-card"><div class="product-card__img" style="background:#e8f5e9;">&#127968; Destacados</div><div class="product-card__body"><div class="product-card__name">Destacados</div><div class="product-card__validity">Valido por 1 inmueble</div><div class="product-card__desc">Resalta tu inmueble en las primeras posiciones</div><div class="product-card__price">$47.300</div><a class="product-card__link" onclick="tryBuy()">Ver detalle</a><div class="product-card__quantity"><button class="product-card__qty-btn">-</button><span class="product-card__qty-value">0</span><button class="product-card__qty-btn" onclick="tryBuy()">+</button></div></div></div>
+        <div class="product-card"><div class="product-card__img" style="background:#e3f2fd;">&#11014; Ascendidos</div><div class="product-card__body"><div class="product-card__name">Ascendidos</div><div class="product-card__validity">Valido por 1 inmueble</div><div class="product-card__desc">Posiciona tu inmueble en los primeros lugares</div><div class="product-card__price">$6.600</div><a class="product-card__link" onclick="tryBuy()">Ver detalle</a><div class="product-card__quantity"><button class="product-card__qty-btn">-</button><span class="product-card__qty-value">0</span><button class="product-card__qty-btn" onclick="tryBuy()">+</button></div></div></div>
+        <div class="product-card"><div class="product-card__img" style="background:#fff3e0;"><span class="product-card__badge">Nuevo</span>&#128640; Pauta</div><div class="product-card__body"><div class="product-card__name">Pauta tu Inmueble</div><div class="product-card__validity">Valido por 1 inmueble</div><div class="product-card__desc">Pauta en Google: Tu inmueble en los primeros puestos de busqueda</div><div class="product-card__price">$200.000</div><a class="product-card__link" onclick="tryBuy()">Ver detalle</a><div class="product-card__quantity"><button class="product-card__qty-btn">-</button><span class="product-card__qty-value">0</span><button class="product-card__qty-btn" onclick="tryBuy()">+</button></div></div></div>
       </div>
-      <div class="product-card">
-        <div class="product-card__icon">⬆️</div>
-        <div class="product-card__name">Ascendido</div>
-        <div class="product-card__price">$49.900</div>
-        <div class="product-card__desc">Asciende tu inmueble a los primeros lugares durante 1 dia</div>
-        <button class="product-card__btn" onclick="tryBuy('Ascendido')">Comprar</button>
-      </div>
-      <div class="product-card">
-        <div class="product-card__icon">📷</div>
-        <div class="product-card__name">Google Ads (Pauta)</div>
-        <div class="product-card__price">$149.900</div>
-        <div class="product-card__desc">Pauta tu inmueble en Google para atraer mas interesados</div>
-        <button class="product-card__btn" onclick="tryBuy('Google Ads')">Comprar</button>
+      <div class="products-grid">
+        <div class="product-card"><div class="product-card__img" style="background:#e8eaf6;">&#129302; Agente AI</div><div class="product-card__body"><div class="product-card__name">Agente AI</div><div class="product-card__desc">Asistente inteligente para tus publicaciones</div><a class="product-card__link" onclick="tryBuy()">Ver detalle</a></div></div>
+        <div class="product-card"><div class="product-card__img" style="background:#fce4ec;">&#128161; Captacion inteligente+</div><div class="product-card__body"><div class="product-card__name">Captacion inteligente+</div><div class="product-card__desc">Herramientas avanzadas de captacion de leads</div><a class="product-card__link" onclick="tryBuy()">Ver detalle</a></div></div>
       </div>
     </div>
   </div>
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal">
-      <div class="modal__icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F57C00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-      </div>
+      <div class="modal__icon"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F57C00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
       <h2 class="modal__title">Para comprar un producto debes tener un plan activo</h2>
       <p class="modal__description">Adquiere un plan para poder acceder a productos adicionales como Destacados, Ascendidos y mas beneficios para tus inmuebles.</p>
       <div class="modal__actions">
@@ -98,8 +114,8 @@
   <script>
     let currentProfile = 'inmobiliaria';
     const planUrls = { 'inmobiliaria': 'https://www.ciencuadras.com/publicacion-inmuebles/inmobiliaria', 'personas': 'https://www.ciencuadras.com/publicacion-inmuebles/personas', 'agente-inmobiliario': 'https://www.ciencuadras.com/publicacion-inmuebles/agente-inmobiliario' };
-    function setProfile(profile, btn) { currentProfile = profile; document.querySelectorAll('.profile-selector__btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
-    function tryBuy(product) { document.getElementById('modalOverlay').classList.add('active'); }
+    function setProfile(profile, btn) { currentProfile = profile; document.querySelectorAll('.profile-bar__btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
+    function tryBuy() { document.getElementById('modalOverlay').classList.add('active'); }
     function closeModal() { document.getElementById('modalOverlay').classList.remove('active'); }
     function buyPlan() { window.location.href = planUrls[currentProfile]; }
     document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
