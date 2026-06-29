@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prototipo — Modal Plan Activo Requerido | Ciencuadras</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Montserrat', sans-serif; background: #f5f5f5; min-height: 100vh; }
+    .header { background: #fff; padding: 16px 24px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 12px; }
+    .header__logo { font-size: 20px; font-weight: 700; color: #00897B; }
+    .header__nav { font-size: 14px; color: #666; }
+    .content { max-width: 1100px; margin: 32px auto; padding: 0 24px; }
+    .content__title { font-size: 22px; font-weight: 700; color: #333; margin-bottom: 24px; }
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .product-card { background: #fff; border-radius: 10px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-align: center; transition: transform 0.2s; }
+    .product-card:hover { transform: translateY(-2px); }
+    .product-card__icon { font-size: 36px; margin-bottom: 12px; }
+    .product-card__name { font-size: 16px; font-weight: 700; color: #333; margin-bottom: 8px; }
+    .product-card__price { font-size: 20px; font-weight: 700; color: #00897B; margin-bottom: 16px; }
+    .product-card__desc { font-size: 13px; color: #666; margin-bottom: 20px; line-height: 1.4; }
+    .product-card__btn { background: #00897B; color: #fff; border: none; padding: 12px 28px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s; font-family: 'Montserrat', sans-serif; }
+    .product-card__btn:hover { background: #00796B; }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; animation: fadeIn 0.2s ease-out; }
+    .modal-overlay.active { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .modal { background: #fff; border-radius: 12px; padding: 32px; max-width: 440px; width: 90%; box-shadow: 0 20px 60px rgba(41,48,56,0.15); text-align: center; animation: slideUp 0.3s ease-out; }
+    .modal__icon { width: 64px; height: 64px; margin: 0 auto 20px; background: #FFF3E0; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .modal__title { font-size: 18px; font-weight: 700; color: #333; margin-bottom: 12px; line-height: 1.3; }
+    .modal__description { font-size: 14px; color: #666; margin-bottom: 28px; line-height: 1.5; }
+    .modal__actions { display: flex; gap: 12px; justify-content: center; }
+    .modal__btn { padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; min-width: 120px; font-family: 'Montserrat', sans-serif; }
+    .modal__btn--cancel { background: #fff; color: #666; border: 1px solid #E0E0E0; }
+    .modal__btn--cancel:hover { background: #F5F5F5; border-color: #BDBDBD; }
+    .modal__btn--primary { background: #00897B; color: #fff; }
+    .modal__btn--primary:hover { background: #00796B; box-shadow: 0 4px 12px rgba(0,137,123,0.3); }
+    .profile-selector { margin-bottom: 24px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .profile-selector__label { font-size: 13px; color: #666; font-weight: 600; }
+    .profile-selector__btn { padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid #E0E0E0; background: #fff; color: #666; transition: all 0.2s; font-family: 'Montserrat', sans-serif; }
+    .profile-selector__btn.active { background: #00897B; color: #fff; border-color: #00897B; }
+    .info-banner { background: #E3F2FD; border-radius: 8px; padding: 12px 16px; margin-bottom: 24px; font-size: 13px; color: #1565C0; display: flex; align-items: center; gap: 8px; }
+    @media (max-width: 480px) { .modal { padding: 24px 20px; } .modal__actions { flex-direction: column-reverse; } .modal__btn { width: 100%; } .products-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header__logo">ciencuadras</div>
+    <div class="header__nav">Zona Privada › Productos</div>
+  </div>
+  <div class="content">
+    <div class="info-banner">ℹ Este prototipo simula la modal que aparece cuando un usuario sin plan activo intenta comprar un producto. Haz clic en "Comprar" en cualquier producto.</div>
+    <div class="profile-selector">
+      <span class="profile-selector__label">Simular perfil:</span>
+      <button class="profile-selector__btn active" onclick="setProfile('inmobiliaria', this)">Inmobiliaria</button>
+      <button class="profile-selector__btn" onclick="setProfile('personas', this)">Persona Natural</button>
+      <button class="profile-selector__btn" onclick="setProfile('agente-inmobiliario', this)">Agente Inmobiliario</button>
+    </div>
+    <h1 class="content__title">Productos disponibles</h1>
+    <div class="products-grid">
+      <div class="product-card">
+        <div class="product-card__icon">⭐</div>
+        <div class="product-card__name">Destacado</div>
+        <div class="product-card__price">$99.900</div>
+        <div class="product-card__desc">Destaca tu inmueble en las primeras posiciones durante 1 mes</div>
+        <button class="product-card__btn" onclick="tryBuy('Destacado')">Comprar</button>
+      </div>
+      <div class="product-card">
+        <div class="product-card__icon">⬆️</div>
+        <div class="product-card__name">Ascendido</div>
+        <div class="product-card__price">$49.900</div>
+        <div class="product-card__desc">Asciende tu inmueble a los primeros lugares durante 1 dia</div>
+        <button class="product-card__btn" onclick="tryBuy('Ascendido')">Comprar</button>
+      </div>
+      <div class="product-card">
+        <div class="product-card__icon">📷</div>
+        <div class="product-card__name">Google Ads (Pauta)</div>
+        <div class="product-card__price">$149.900</div>
+        <div class="product-card__desc">Pauta tu inmueble en Google para atraer mas interesados</div>
+        <button class="product-card__btn" onclick="tryBuy('Google Ads')">Comprar</button>
+      </div>
+    </div>
+  </div>
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal__icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F57C00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+      </div>
+      <h2 class="modal__title">Para comprar un producto debes tener un plan activo</h2>
+      <p class="modal__description">Adquiere un plan para poder acceder a productos adicionales como Destacados, Ascendidos y mas beneficios para tus inmuebles.</p>
+      <div class="modal__actions">
+        <button class="modal__btn modal__btn--cancel" onclick="closeModal()">Cancelar</button>
+        <button class="modal__btn modal__btn--primary" onclick="buyPlan()">Comprar plan</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    let currentProfile = 'inmobiliaria';
+    const planUrls = { 'inmobiliaria': 'https://www.ciencuadras.com/publicacion-inmuebles/inmobiliaria', 'personas': 'https://www.ciencuadras.com/publicacion-inmuebles/personas', 'agente-inmobiliario': 'https://www.ciencuadras.com/publicacion-inmuebles/agente-inmobiliario' };
+    function setProfile(profile, btn) { currentProfile = profile; document.querySelectorAll('.profile-selector__btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
+    function tryBuy(product) { document.getElementById('modalOverlay').classList.add('active'); }
+    function closeModal() { document.getElementById('modalOverlay').classList.remove('active'); }
+    function buyPlan() { window.location.href = planUrls[currentProfile]; }
+    document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+  </script>
+</body>
+</html>
